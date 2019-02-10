@@ -1,8 +1,10 @@
-package mbenoukaiss.tetris;
+package mbenoukaiss.tetris.pieces;
 
 import android.graphics.Rect;
 
-public class Piece implements Movable {
+import mbenoukaiss.tetris.Movable;
+
+public class Tetromino implements Movable {
 
     private Rect position;
     private int[][] matrix;

@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import mbenoukaiss.tetris.pieces.TetrominoView;
+
 public class Adapter extends BaseAdapter {
 
     private final Context context;
@@ -34,14 +36,14 @@ public class Adapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        PieceView view;
+        TetrominoView view;
 
         if(convertView == null) {
-            view = new PieceView(context, 0xFFFF0000);
+            view = new TetrominoView(context, 0xFFFF0000);
             view.setLayoutParams(new ViewGroup.LayoutParams(85, 85));
             view.setPadding(0, 0, 0, 0);
         } else {
-            view = (PieceView) convertView;
+            view = (TetrominoView) convertView;
         }
 
         return view;
