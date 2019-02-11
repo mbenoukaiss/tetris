@@ -28,7 +28,7 @@ public class Game {
 
     public Game(Context context) {
         this.context = context;
-        this.gridSize = new Size(6, 10);
+        this.gridSize = new Size(12, 16);
         this.factory = new TetrominoFactory(gridSize.getWidth());
         this.future = new Stack<>();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
@@ -43,23 +43,6 @@ public class Game {
         return gridSize;
     }
 
-    public SquareView getSquareAt(Point position) {
-        if(position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
-                position.x < falling.getPosition().x + falling.getSize().getWidth() &&
-                position.y < falling.getPosition().y + falling.getSize().getHeight()) {
-
-            if(falling.getLayout()[position.y - falling.getPosition().y][position.x - falling.getPosition().x] == 1)
-                return new SquareView(context, falling.getColor());
-        }
-
-        Integer squareColor = fallen[getGridSize().getWidth() - position.x - 1][getGridSize().getHeight() - position.y - 1];
-
-        if(squareColor == null)
-            return new SquareView(context, 0xFFFFFFFF);
-        else
-            return new SquareView(context, squareColor);
-    }
-
     public Tetromino nextTetromino() {
         future.push(factory.generate());
         return future.pop();
@@ -69,9 +52,47 @@ public class Game {
         return future.iterator();
     }
 
+    public Tetromino getFallingTetromino() {
+        return falling;
+    }
+
+    public SquareView getSquareAt(Point position) {
+        if(position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
+                position.x < falling.getPosition().x + falling.getSize().getWidth() &&
+                position.y < falling.getPosition().y + falling.getSize().getHeight()) {
+
+            if(falling.getLayout()[position.y - falling.getPosition().y][position.x - falling.getPosition().x] == 1)
+                return new SquareView(context, falling.getColor());
+        }
+
+        Integer squareColor = fallen[position.x][position.y];
+
+        if(squareColor == null)
+            return new SquareView(context, 0xFFFFFFFF);
+        else
+            return new SquareView(context, squareColor);
+    }
+
     public void processFallingTetrominoes() {
         falling.down();
-        //TODO: Check collisions
+
+        boolean reachedBottom = falling.getPosition().y + falling.getSize().getHeight() == gridSize.getHeight();
+
+        for(int i = 0; i < falling.getSize().getWidth() && !reachedBottom; ++i) {
+            if(fallen[falling.getPosition().x + i][falling.getPosition().y + falling.getSize().getHeight()] != null)
+                reachedBottom = true;
+        }
+
+        if(reachedBottom) {
+            for(int i = 0; i < falling.getSize().getWidth(); ++i) {
+                for(int j = 0; j < falling.getSize().getHeight(); ++j) {
+                    if(falling.getLayout()[j][i] == 1)
+                        fallen[falling.getPosition().x + i][falling.getPosition().y + j] = falling.getColor();
+                }
+            }
+
+            falling = nextTetromino();
+        }
     }
 
     private void checkLines() {

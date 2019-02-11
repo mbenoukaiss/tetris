@@ -26,7 +26,7 @@ public class Adapter extends BaseAdapter {
             game.processFallingTetrominoes();
             view.invalidateViews();
 
-            handler.postDelayed(this,2000);
+            handler.postDelayed(this,500);
         }
     };
 
@@ -35,7 +35,7 @@ public class Adapter extends BaseAdapter {
         this.game = game;
         this.view = view;
 
-        handler.postDelayed(fallingTetrominoesClock, 2000);
+        handler.postDelayed(fallingTetrominoesClock, 1000);
     }
 
     @Override
