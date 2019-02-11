@@ -95,6 +95,7 @@ public class Game {
                 }
             }
 
+            checkLines();
             falling = nextTetromino();
         }
     }
@@ -104,7 +105,8 @@ public class Game {
             int j = 0;
 
             while(j < gridSize.getWidth())
-                if(fallen[i][j++] == null) break;
+                if(fallen[j][i] == null) break;
+                else ++j;
 
             if(j == gridSize.getWidth()) //complete line
                 shiftFallen(i);
@@ -112,13 +114,13 @@ public class Game {
     }
 
     private void shiftFallen(int row) {
-        for(int i = row; i < gridSize.getHeight() - 1; ++i) {
+        for(int i = row; i > 0; --i) {
             boolean allNull = true;
 
             for(int j = 0; j < gridSize.getWidth(); ++j) {
-                fallen[i][j] = fallen[i + 1][j];
+                fallen[j][i] = fallen[j][i - 1];
 
-                if(fallen[i + 1][j] != null)
+                if(fallen[j][i - 1] != null)
                     allNull = false;
             }
 
