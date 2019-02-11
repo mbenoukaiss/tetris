@@ -1,27 +1,32 @@
 package mbenoukaiss.tetris;
 
 import android.content.Context;
-import android.util.Size;
+import android.graphics.Point;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 
-import mbenoukaiss.tetris.pieces.TetrominoView;
+import mbenoukaiss.tetris.pieces.SquareView;
 
 public class Adapter extends BaseAdapter {
 
     private final Context context;
 
-    private Size gridSize;
+    private final GridView view;
 
-    public Adapter(Context context, Size gridSize) {
+    private final Game game;
+
+    public Adapter(Context context, GridView view, Game game) {
         this.context = context;
-        this.gridSize = gridSize;
+        this.game = game;
+        this.view = view;
     }
 
     @Override
     public int getCount() {
-        return gridSize.getWidth() * gridSize.getHeight();
+        return game.getGridSize().getWidth() * game.getGridSize().getHeight();
     }
 
     @Override
@@ -35,16 +40,15 @@ public class Adapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        TetrominoView view;
+    public View getView(int offset, View convertView, ViewGroup parent) {
+        Point position = new Point(
+                offset % game.getGridSize().getWidth(),
+                offset / game.getGridSize().getWidth()
+        );
 
-        if(convertView == null) {
-            view = new TetrominoView(context, 0xFFFF0000);
-            view.setLayoutParams(new ViewGroup.LayoutParams(85, 85));
-            view.setPadding(0, 0, 0, 0);
-        } else {
-            view = (TetrominoView) convertView;
-        }
+        SquareView view = game.getSquareAt(position);
+        view.setLayoutParams(new ViewGroup.LayoutParams(85, 85));
+        view.setPadding(0, 0, 0, 0);
 
         return view;
     }

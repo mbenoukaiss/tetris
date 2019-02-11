@@ -16,9 +16,9 @@ public class Tetromino implements Movable {
         Z(0xFFFF0000, 3, 2),
         S(0xFF00FF00, 3, 2);
 
-        private final int color;
-        private final int width;
-        private final int height;
+        final int color;
+        final int width;
+        final int height;
 
         Type(int color, int width, int height) {
             this.color = color;
@@ -69,7 +69,7 @@ public class Tetromino implements Movable {
 
     }
 
-    private Type type;
+    public Type type;
     private Point position;
     private Size size;
     private int[][] matrix;
@@ -91,6 +91,10 @@ public class Tetromino implements Movable {
 
     public int getColor() {
         return type.color;
+    }
+
+    public int[][] getLayout() {
+        return matrix;
     }
 
     @Override

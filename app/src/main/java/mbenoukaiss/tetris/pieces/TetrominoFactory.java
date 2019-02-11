@@ -32,15 +32,15 @@ public class TetrominoFactory {
      */
     public TetrominoFactory(int gridWidth) {
         this.probabilities = new HashMap<>();
-        probabilities.put(Type.I, 1.0d / Type.values().length);
-        probabilities.put(Type.O, 1.0d / Type.values().length);
-        probabilities.put(Type.T, 1.0d / Type.values().length);
-        probabilities.put(Type.L, 1.0d / Type.values().length);
-        probabilities.put(Type.J, 1.0d / Type.values().length);
-        probabilities.put(Type.Z, 1.0d / Type.values().length);
-        probabilities.put(Type.S, 1.0d / Type.values().length);
+        probabilities.put(Type.I, 1.0d);
+        probabilities.put(Type.O, 1.0d);
+        probabilities.put(Type.T, 1.0d);
+        probabilities.put(Type.L, 1.0d);
+        probabilities.put(Type.J, 1.0d);
+        probabilities.put(Type.Z, 1.0d);
+        probabilities.put(Type.S, 1.0d);
 
-        this.total = 1.0d;
+        this.total = Type.values().length;
         this.gridWidth = gridWidth;
     }
 
@@ -70,9 +70,12 @@ public class TetrominoFactory {
 
         do {
             double result = Math.random() * total;
+            double sum = 0;
 
             for(Map.Entry<Type, Double> entry : probabilities.entrySet()) {
-                if(entry.getValue() >= result) {
+                sum += entry.getValue();
+
+                if(sum >= result) {
                     type = entry.getKey();
                     break;
                 }
