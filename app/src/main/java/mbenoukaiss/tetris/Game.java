@@ -3,6 +3,7 @@ package mbenoukaiss.tetris;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Size;
+import android.widget.Toast;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -24,7 +25,6 @@ public class Game {
     private Tetromino falling;
 
     private Integer[][] fallen;
-
 
     public Game(Context context) {
         this.context = context;
@@ -98,6 +98,11 @@ public class Game {
             checkLines();
             falling = nextTetromino();
         }
+    }
+
+    public boolean isRotationValid() {
+        return falling.getPosition().x + falling.getSize().getHeight() < gridSize.getWidth() &&
+                falling.getPosition().y + falling.getSize().getWidth() < gridSize.getHeight();
     }
 
     private void checkLines() {

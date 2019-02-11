@@ -101,7 +101,7 @@ public class Tetromino implements Movable {
     public void rotate() {
         size = new Size(size.getHeight(), size.getWidth());
 
-        int[][] newMatrix = new int[size.getWidth()][size.getHeight()];
+        int[][] newMatrix = new int[size.getHeight()][size.getWidth()];
         for(int i = 0; i < size.getWidth(); ++i) {
             for(int j = 0; j < size.getHeight(); ++j) {
                 newMatrix[j][size.getWidth()-1-i] = matrix[i][j];

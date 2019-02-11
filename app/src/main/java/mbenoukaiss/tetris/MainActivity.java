@@ -30,7 +30,10 @@ public class MainActivity extends Activity {
         });
 
         Button rotate = findViewById(R.id.rotate);
-        rotate.setOnClickListener(v -> game.getFallingTetromino().rotate());
+        rotate.setOnClickListener(v -> {
+            if(game.isRotationValid())
+                game.getFallingTetromino().rotate();
+        });
 
         Button right = findViewById(R.id.right);
         right.setOnClickListener(v -> {
