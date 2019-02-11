@@ -73,13 +73,17 @@ public class Game {
             return new SquareView(context, squareColor);
     }
 
-    public void processFallingTetrominoes() {
+    public void processFallingTetromino() {
         falling.down();
 
         boolean reachedBottom = falling.getPosition().y + falling.getSize().getHeight() == gridSize.getHeight();
 
         for(int i = 0; i < falling.getSize().getWidth() && !reachedBottom; ++i) {
-            if(fallen[falling.getPosition().x + i][falling.getPosition().y + falling.getSize().getHeight()] != null)
+            int j = falling.getSize().getHeight() - 1;
+            System.out.println(i + "");
+            while(falling.getLayout()[j][i] == 0) --j;
+
+            if(fallen[falling.getPosition().x + i][falling.getPosition().y + j + 1] != null)
                 reachedBottom = true;
         }
 

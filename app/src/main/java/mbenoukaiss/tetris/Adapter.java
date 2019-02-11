@@ -23,7 +23,7 @@ public class Adapter extends BaseAdapter {
     private Runnable fallingTetrominoesClock = new Runnable() {
         @Override
         public void run() {
-            game.processFallingTetrominoes();
+            game.processFallingTetromino();
             view.invalidateViews();
 
             handler.postDelayed(this,500);
