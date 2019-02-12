@@ -11,7 +11,9 @@ import mbenoukaiss.tetris.R;
 
 public class TetrisActivity extends Activity {
 
-    private final int MIN_SWIPE_DISTANCE = 100;
+    private static final int MIN_SWIPE_DISTANCE = 75;
+
+    private static final int MAX_X_MARGIN_OF_ERROR = 250;
 
     private Rect LEFT_TOUCH_AREA;
 
@@ -23,7 +25,7 @@ public class TetrisActivity extends Activity {
 
     private GridView tetris;
 
-    private float ySwipeStart;
+    private Point swipeStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +49,22 @@ public class TetrisActivity extends Activity {
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if(event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            ySwipeStart = event.getY();
+            swipeStart = new Point((int) event.getX(), (int) event.getY());
         } else if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+            if(event.getY() - swipeStart.y > MIN_SWIPE_DISTANCE &&
+                    Math.abs(event.getX() - swipeStart.x) <= MAX_X_MARGIN_OF_ERROR) {
+                game.dropFallingTetromino();
+                tetris.invalidateViews();
+                return true;
+            }
+
             if(LEFT_TOUCH_AREA.contains((int) event.getX(), (int) event.getY())) {
                 if(game.isTranslationValid(-1, 0)) {
                     game.getFallingTetromino().left();
                     tetris.invalidateViews();
                 }
             } else if(ROTATE_TOUCH_AREA.contains((int) event.getX(), (int) event.getY())) {
-                if(event.getY() - ySwipeStart > MIN_SWIPE_DISTANCE) {
-                    game.sendFallingTetrominoDown();
-                } else if(game.isRotationValid()) {
+                if(game.isRotationValid()) {
                     game.getFallingTetromino().rotate();
                     tetris.invalidateViews();
                 }

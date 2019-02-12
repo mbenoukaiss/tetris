@@ -3,10 +3,10 @@ package mbenoukaiss.tetris.game;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Size;
-import android.widget.Toast;
 
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import mbenoukaiss.tetris.game.pieces.Tetromino;
 import mbenoukaiss.tetris.game.pieces.TetrominoFactory;
@@ -19,7 +19,7 @@ public class Game {
 
     private TetrominoFactory factory;
 
-    private Stack<Tetromino> future;
+    private Queue<Tetromino> future;
 
     private Tetromino falling;
 
@@ -32,7 +32,7 @@ public class Game {
         this.context = context;
         this.gridSize = new Size(12, 16);
         this.factory = new TetrominoFactory(gridSize.getWidth());
-        this.future = new Stack<>();
+        this.future = new LinkedList<>();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
         this.lost = false;
 
@@ -47,8 +47,8 @@ public class Game {
     }
 
     public Tetromino nextTetromino() {
-        future.push(factory.generate());
-        return future.pop();
+        future.add(factory.generate());
+        return future.remove();
     }
 
     public Iterator<Tetromino> futureTetrominoes() {
@@ -60,7 +60,7 @@ public class Game {
     }
 
     public int getSquareAt(Point position) {
-        if(position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
+        if(falling != null && position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
                 position.x < falling.getPosition().x + falling.getSize().getWidth() &&
                 position.y < falling.getPosition().y + falling.getSize().getHeight()) {
 
@@ -83,8 +83,10 @@ public class Game {
             for(int i = 0; i < falling.getSize().getWidth(); ++i) {
                 for(int j = 0; j < falling.getSize().getHeight(); ++j) {
                     if(falling.getLayout()[j][i] == 1) {
-                        if(fallen[falling.getPosition().x + i][falling.getPosition().y + j] != null)
+                        if(fallen[falling.getPosition().x + i][falling.getPosition().y + j] != null) {
                             lost();
+                            return;
+                        }
 
                         fallen[falling.getPosition().x + i][falling.getPosition().y + j] = falling.getColor();
                     }
@@ -98,7 +100,7 @@ public class Game {
         }
     }
 
-    public void sendFallingTetrominoDown() {
+    public void dropFallingTetromino() {
         while(isTranslationValid(0, 1))
             processFallingTetromino();
     }
@@ -158,6 +160,7 @@ public class Game {
     }
 
     private void checkLines() {
+        //TODO: Return the amount of lines removed to calculate the score
         for(int i = 0; i < gridSize.getHeight(); ++i) {
             int j = 0;
 
@@ -191,7 +194,7 @@ public class Game {
 
     private void lost() {
         lost = true;
-        Toast.makeText(context, "lol u lost big trash", Toast.LENGTH_LONG).show();
+        falling = null;
     }
 
 }

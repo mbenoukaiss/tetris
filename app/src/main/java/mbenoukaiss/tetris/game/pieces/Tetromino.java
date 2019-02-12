@@ -8,7 +8,7 @@ public class Tetromino implements mbenoukaiss.tetris.game.pieces.Movable {
     public enum Type {
         I(0xFF00FFFF, 4, 1),
         O(0xFFFFFF00, 2, 2),
-        T(0xFF551A8B, 3, 2),
+        T(0xFFEE1493, 3, 2),
         L(0xFFFFA500, 3, 2),
         J(0xFF0000FF, 3, 2),
         Z(0xFFFF0000, 3, 2),
