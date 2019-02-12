@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,11 +25,11 @@
     </FrameLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="128dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="64dp"
         android:layout_marginBottom="128dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,33 +38,66 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="64dp"
-            android:fontFamily="@font/press_start"
+            android:fontFamily="@font/press_start_2p"
             android:text="@string/app_name"
             android:textAlignment="center"
             android:textAllCaps="false"
-            android:textSize="36sp"
+            android:textColor="@android:color/white"
+            android:textSize="38sp"
             android:textStyle="bold" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10" />
 
         <Button
             android:id="@+id/play"
+            style="@style/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/play" />
+            android:fontFamily="@font/press_start_2p"
+            android:paddingTop="16dp"
+            android:text="@string/play"
+            android:textSize="14sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/highscores"
+            style="@style/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/highscores" />
+            android:enabled="false"
+            android:fontFamily="@font/press_start_2p"
+            android:paddingTop="16dp"
+            android:text="@string/highscores"
+            android:textSize="14sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/quit"
+            style="@style/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/quit" />
+            android:fontFamily="@font/press_start_2p"
+            android:paddingTop="16dp"
+            android:text="@string/quit"
+            android:textSize="14sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
