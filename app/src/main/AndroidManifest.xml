@@ -13,6 +13,9 @@
             android:name=".game.TetrisActivity"
             android:screenOrientation="portrait"></activity>
         <activity
+            android:name=".game.LostActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

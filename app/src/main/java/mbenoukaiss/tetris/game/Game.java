@@ -25,8 +25,9 @@ public class Game {
 
     private Integer[][] fallen;
 
-    private boolean lost;
+    private boolean started;
 
+    private boolean lost;
 
     public Game(Context context) {
         this.context = context;
@@ -34,12 +35,8 @@ public class Game {
         this.factory = new TetrominoFactory(gridSize.getWidth());
         this.future = new LinkedList<>();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
+        this.started = false;
         this.lost = false;
-
-        for(int i = 0; i < 3; ++i)
-            future.add(factory.generate());
-
-        falling = factory.generate();
     }
 
     public Size getGridSize() {
@@ -186,6 +183,19 @@ public class Game {
 
             if(allNull) return;
         }
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void start() {
+        started = true;
+
+        for(int i = 0; i < 3; ++i)
+            future.add(factory.generate());
+
+        falling = nextTetromino();
     }
 
     public boolean isLost() {

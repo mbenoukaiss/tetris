@@ -21,28 +21,10 @@ public class Adapter extends BaseAdapter {
 
     private final Game game;
 
-    private Handler handler = new Handler();
-
-    private Runnable fallingTetrominoesClock = new Runnable() {
-        @Override
-        public void run() {
-            if(!game.isLost()) {
-                game.processFallingTetromino();
-                view.invalidateViews();
-                handler.postDelayed(this, 500);
-            } else if(view.getAlpha() > 0.0f) {
-                view.setAlpha(view.getAlpha() - 0.05f);
-                handler.postDelayed(this, 200);
-            }
-        }
-    };
-
     public Adapter(Context context, GridView view, Game game) {
         this.context = context;
         this.game = game;
         this.view = view;
-
-        handler.postDelayed(fallingTetrominoesClock, 1000);
     }
 
     @Override

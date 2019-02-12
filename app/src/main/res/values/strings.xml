@@ -8,4 +8,6 @@
     <string name="highscores">Highscores</string>
     <string name="quit">Quit</string>
     <string name="background_description">Background image</string>
+    <string name="lost">You lost</string>
+    <string name="main_menu">Main menu</string>
 </resources>

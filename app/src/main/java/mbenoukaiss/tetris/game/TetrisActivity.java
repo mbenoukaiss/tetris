@@ -1,9 +1,11 @@
 package mbenoukaiss.tetris.game;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.widget.GridView;
 
@@ -27,6 +29,29 @@ public class TetrisActivity extends Activity {
 
     private Point swipeStart;
 
+    private Handler handler = new Handler();
+
+    private Runnable fallingTetrominoesClock = new Runnable() {
+        @Override
+        public void run() {
+            if(!game.isLost()) {
+                game.processFallingTetromino();
+                tetris.invalidateViews();
+                handler.postDelayed(this, 500);
+            } else if(tetris.getAlpha() > 0.0f) {
+                tetris.setAlpha(tetris.getAlpha() - 0.05f);
+                handler.postDelayed(this, 200);
+            } else {
+                Intent intent = new Intent(TetrisActivity.this, LostActivity.class);
+                startActivity(intent);
+            }
+        }
+    };
+
+    public TetrisActivity() {
+        swipeStart = new Point();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +73,16 @@ public class TetrisActivity extends Activity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        if(!game.isStarted()) {
+            if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+                game.start();
+                tetris.invalidateViews();
+                handler.postDelayed(fallingTetrominoesClock, 500);
+            }
+
+            return true;
+        }
+
         if(event.getActionMasked() == MotionEvent.ACTION_DOWN) {
             swipeStart = new Point((int) event.getX(), (int) event.getY());
         } else if(event.getActionMasked() == MotionEvent.ACTION_UP) {
