@@ -23,22 +23,26 @@ public class TetrisActivity extends Activity {
 
         Button left = findViewById(R.id.left);
         left.setOnClickListener(v -> {
-            if(game.getFallingTetromino().getPosition().x > 0)
+            if(game.isTranslationValid(-1, 0)) {
                 game.getFallingTetromino().left();
+                gridview.invalidateViews();
+            }
         });
 
         Button rotate = findViewById(R.id.rotate);
         rotate.setOnClickListener(v -> {
-            if(game.isRotationValid())
+            if(game.isRotationValid()) {
                 game.getFallingTetromino().rotate();
+                gridview.invalidateViews();
+            }
         });
 
         Button right = findViewById(R.id.right);
         right.setOnClickListener(v -> {
-            Tetromino t = game.getFallingTetromino();
-
-            if(t.getPosition().x + t.getSize().getWidth() < game.getGridSize().getWidth())
+            if(game.isTranslationValid(1, 0)) {
                 game.getFallingTetromino().right();
+                gridview.invalidateViews();
+            }
         });
 
     }

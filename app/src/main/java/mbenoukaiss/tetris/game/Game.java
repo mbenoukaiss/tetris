@@ -77,18 +77,7 @@ public class Game {
     }
 
     public void processFallingTetromino() {
-        falling.down();
-
-        boolean reachedBottom = falling.getPosition().y + falling.getSize().getHeight() == gridSize.getHeight();
-
-        for(int i = 0; i < falling.getSize().getWidth() && !reachedBottom; ++i) {
-            int j = falling.getSize().getHeight() - 1;
-            System.out.println(i + "");
-            while(falling.getLayout()[j][i] == 0) --j;
-
-            if(fallen[falling.getPosition().x + i][falling.getPosition().y + j + 1] != null)
-                reachedBottom = true;
-        }
+        boolean reachedBottom = !isTranslationValid(0, 1);
 
         if(reachedBottom) {
             for(int i = 0; i < falling.getSize().getWidth(); ++i) {
@@ -104,16 +93,63 @@ public class Game {
 
             checkLines();
             falling = nextTetromino();
+        } else {
+            falling.down();
         }
     }
 
     public boolean isRotationValid() {
-        return falling.getPosition().x + falling.getSize().getHeight() < gridSize.getWidth() &&
-                falling.getPosition().y + falling.getSize().getWidth() < gridSize.getHeight();
+        if(falling.getPosition().x + falling.getSize().getHeight() > gridSize.getWidth() ||
+                falling.getPosition().y + falling.getSize().getWidth() >= gridSize.getHeight())
+            return false; //outside of the grid
+
+        Tetromino clone = new Tetromino(falling);
+        clone.rotate();
+
+        for(int i = 0; i < clone.getSize().getWidth(); ++i) {
+            for(int j = 0; j < clone.getSize().getHeight(); ++j) {
+                if(clone.getLayout()[j][i] == 1 &&
+                        fallen[clone.getPosition().x + i][clone.getPosition().y + j] != null)
+                    return false;
+            }
+        }
+
+        return true;
     }
 
-    public boolean isTranslationValid(Point offset) {
-        return false;
+
+    public boolean isTranslationValid(int ox, int oy) {
+        if(Math.abs(ox) > 1 || oy < 0 || oy > 1)
+            throw new IllegalArgumentException("Offset coordinate x must be either 1, 0 or -1 and y must be 0 or 1");
+
+        boolean canTranslate = true;
+
+        if(ox != 0) {
+            canTranslate =  falling.getPosition().x + ox >= 0 &&
+                    falling.getPosition().x + falling.getSize().getWidth() + ox <= gridSize.getWidth();
+
+            for(int i = 0; i < falling.getSize().getHeight() && canTranslate; ++i) {
+                int j = ox == -1 ? 0 : falling.getSize().getWidth() - 1;
+                while(falling.getLayout()[i][j] == 0) j -= ox;
+
+                if(fallen[falling.getPosition().x + j + ox][falling.getPosition().y + i] != null)
+                    canTranslate = false;
+            }
+        }
+
+        if(oy != 0) {
+            canTranslate = falling.getPosition().y + falling.getSize().getHeight() < gridSize.getHeight();
+
+            for(int i = 0; i < falling.getSize().getWidth() && canTranslate; ++i) {
+                int j = falling.getSize().getHeight() - 1;
+                while(falling.getLayout()[j][i] == 0) --j;
+
+                if(fallen[falling.getPosition().x + i][falling.getPosition().y + j + 1] != null)
+                    canTranslate = false;
+            }
+        }
+
+        return canTranslate;
     }
 
     private void checkLines() {

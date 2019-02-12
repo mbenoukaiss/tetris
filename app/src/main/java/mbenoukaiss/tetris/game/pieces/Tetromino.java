@@ -67,7 +67,7 @@ public class Tetromino implements mbenoukaiss.tetris.game.pieces.Movable {
 
     }
 
-    public Type type;
+    private Type type;
     private Point position;
     private Size size;
     private int[][] matrix;
@@ -77,6 +77,16 @@ public class Tetromino implements mbenoukaiss.tetris.game.pieces.Movable {
         this.position = position;
         this.size = new Size(type.width, type.height);
         this.matrix = type.getLayout();
+    }
+
+    public Tetromino(Tetromino other) {
+        this.type = other.type;
+        this.position = new Point(other.position);
+        this.size = other.size;
+        this.matrix = new int[size.getHeight()][];
+
+        for(int i = 0 ; i < size.getHeight(); ++i)
+            matrix[i] = other.matrix[i].clone();
     }
 
     public Point getPosition() {
