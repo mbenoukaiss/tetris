@@ -98,6 +98,11 @@ public class Game {
         }
     }
 
+    public void sendFallingTetrominoDown() {
+        while(isTranslationValid(0, 1))
+            processFallingTetromino();
+    }
+
     public boolean isRotationValid() {
         if(falling.getPosition().x + falling.getSize().getHeight() > gridSize.getWidth() ||
                 falling.getPosition().y + falling.getSize().getWidth() >= gridSize.getHeight())
