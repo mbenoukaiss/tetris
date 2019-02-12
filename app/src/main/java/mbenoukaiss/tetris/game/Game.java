@@ -1,4 +1,4 @@
-package mbenoukaiss.tetris;
+package mbenoukaiss.tetris.game;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -8,9 +8,8 @@ import android.widget.Toast;
 import java.util.Iterator;
 import java.util.Stack;
 
-import mbenoukaiss.tetris.pieces.Tetromino;
-import mbenoukaiss.tetris.pieces.TetrominoFactory;
-import mbenoukaiss.tetris.pieces.SquareView;
+import mbenoukaiss.tetris.game.pieces.Tetromino;
+import mbenoukaiss.tetris.game.pieces.TetrominoFactory;
 
 public class Game {
 
@@ -26,12 +25,16 @@ public class Game {
 
     private Integer[][] fallen;
 
+    private boolean lost;
+
+
     public Game(Context context) {
         this.context = context;
         this.gridSize = new Size(12, 16);
         this.factory = new TetrominoFactory(gridSize.getWidth());
         this.future = new Stack<>();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
+        this.lost = false;
 
         for(int i = 0; i < 3; ++i)
             future.add(factory.generate());
@@ -56,21 +59,21 @@ public class Game {
         return falling;
     }
 
-    public SquareView getSquareAt(Point position) {
+    public int getSquareAt(Point position) {
         if(position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
                 position.x < falling.getPosition().x + falling.getSize().getWidth() &&
                 position.y < falling.getPosition().y + falling.getSize().getHeight()) {
 
             if(falling.getLayout()[position.y - falling.getPosition().y][position.x - falling.getPosition().x] == 1)
-                return new SquareView(context, falling.getColor());
+                return falling.getColor();
         }
 
         Integer squareColor = fallen[position.x][position.y];
 
         if(squareColor == null)
-            return new SquareView(context, 0xFFFFFFFF);
+            return 0xFFFFFFFF;
         else
-            return new SquareView(context, squareColor);
+            return squareColor;
     }
 
     public void processFallingTetromino() {
@@ -90,8 +93,12 @@ public class Game {
         if(reachedBottom) {
             for(int i = 0; i < falling.getSize().getWidth(); ++i) {
                 for(int j = 0; j < falling.getSize().getHeight(); ++j) {
-                    if(falling.getLayout()[j][i] == 1)
+                    if(falling.getLayout()[j][i] == 1) {
+                        if(fallen[falling.getPosition().x + i][falling.getPosition().y + j] != null)
+                            lost();
+
                         fallen[falling.getPosition().x + i][falling.getPosition().y + j] = falling.getColor();
+                    }
                 }
             }
 
@@ -103,6 +110,10 @@ public class Game {
     public boolean isRotationValid() {
         return falling.getPosition().x + falling.getSize().getHeight() < gridSize.getWidth() &&
                 falling.getPosition().y + falling.getSize().getWidth() < gridSize.getHeight();
+    }
+
+    public boolean isTranslationValid(Point offset) {
+        return false;
     }
 
     private void checkLines() {
@@ -131,6 +142,15 @@ public class Game {
 
             if(allNull) return;
         }
+    }
+
+    public boolean isLost() {
+        return lost;
+    }
+
+    private void lost() {
+        lost = true;
+        Toast.makeText(context, "lol u lost big trash", Toast.LENGTH_LONG).show();
     }
 
 }

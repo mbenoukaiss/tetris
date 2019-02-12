@@ -1,4 +1,4 @@
-package mbenoukaiss.tetris;
+package mbenoukaiss.tetris.game.pieces;
 
 public interface Movable {
 

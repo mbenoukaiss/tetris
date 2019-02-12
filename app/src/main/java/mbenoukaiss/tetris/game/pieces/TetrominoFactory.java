@@ -1,11 +1,11 @@
-package mbenoukaiss.tetris.pieces;
+package mbenoukaiss.tetris.game.pieces;
 
 import android.graphics.Point;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static mbenoukaiss.tetris.pieces.Tetromino.Type;
+import static mbenoukaiss.tetris.game.pieces.Tetromino.Type;
 
 public class TetrominoFactory {
 
@@ -65,7 +65,7 @@ public class TetrominoFactory {
      *
      * @return A tetromino
      */
-    public Tetromino generate() {
+    public mbenoukaiss.tetris.game.pieces.Tetromino generate() {
         Type type = null;
 
         do {
@@ -85,7 +85,7 @@ public class TetrominoFactory {
         Point position = new Point(0, 0);
         position.x = (int) (Math.random() * (gridWidth - type.width + 1));
 
-        return new Tetromino(type, position);
+        return new mbenoukaiss.tetris.game.pieces.Tetromino(type, position);
     }
 
 }

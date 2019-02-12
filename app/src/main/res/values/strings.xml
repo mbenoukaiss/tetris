@@ -3,4 +3,9 @@
     <string name="rotate">Rotate</string>
     <string name="right">Right</string>
     <string name="left">Left</string>
+    <string name="tetris">Tetris</string>
+    <string name="play">Play</string>
+    <string name="highscores">Highscores</string>
+    <string name="quit">Quit</string>
+    <string name="background_description">Background image</string>
 </resources>

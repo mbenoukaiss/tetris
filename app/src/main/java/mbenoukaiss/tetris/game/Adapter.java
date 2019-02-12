@@ -1,14 +1,14 @@
-package mbenoukaiss.tetris;
+package mbenoukaiss.tetris.game;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-
-import mbenoukaiss.tetris.pieces.SquareView;
+import android.widget.ImageView;
 
 public class Adapter extends BaseAdapter {
 
@@ -26,7 +26,8 @@ public class Adapter extends BaseAdapter {
             game.processFallingTetromino();
             view.invalidateViews();
 
-            handler.postDelayed(this,500);
+            if(!game.isLost())
+                handler.postDelayed(this,500);
         }
     };
 
@@ -55,16 +56,30 @@ public class Adapter extends BaseAdapter {
 
     @Override
     public View getView(int offset, View convertView, ViewGroup parent) {
+        ImageView view = new ImageView(context);
+        view.setAdjustViewBounds(true);
+
+        if(game.isLost()) {
+            Bitmap white = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            white.eraseColor(0xFFFFFFFF);
+
+            view.setImageBitmap(white);
+            return view;
+        }
+
         Point position = new Point(
                 offset % game.getGridSize().getWidth(),
                 offset / game.getGridSize().getWidth()
         );
 
-        SquareView view = game.getSquareAt(position);
-        view.setLayoutParams(new ViewGroup.LayoutParams(85, 85));
-        view.setPadding(0, 0, 0, 0);
+        Bitmap background = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        background.eraseColor(game.getSquareAt(position));
 
-        return view;
+        ImageView imageView = new ImageView(context);
+        imageView.setImageBitmap(background);
+        imageView.setAdjustViewBounds(true);
+
+        return imageView;
     }
 
 }

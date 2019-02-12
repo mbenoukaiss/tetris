@@ -1,11 +1,9 @@
-package mbenoukaiss.tetris.pieces;
+package mbenoukaiss.tetris.game.pieces;
 
 import android.graphics.Point;
 import android.util.Size;
 
-import mbenoukaiss.tetris.Movable;
-
-public class Tetromino implements Movable {
+public class Tetromino implements mbenoukaiss.tetris.game.pieces.Movable {
 
     public enum Type {
         I(0xFF00FFFF, 4, 1),
