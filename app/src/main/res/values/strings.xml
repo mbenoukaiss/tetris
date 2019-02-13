@@ -5,9 +5,13 @@
     <string name="left">Left</string>
     <string name="tetris">Tetris</string>
     <string name="play">Play</string>
-    <string name="highscores">Highscores</string>
+    <string name="scoreboard">Scoreboard</string>
     <string name="quit">Quit</string>
     <string name="background_description">Background image</string>
     <string name="lost">You lost</string>
     <string name="main_menu">Main menu</string>
+    <string name="unknown_score">Unknown score</string>
+    <string name="reset">Reset</string>
+    <string name="score">Score : %d</string>
+    <string name="highest_score">HIGHEST SCORE</string>
 </resources>

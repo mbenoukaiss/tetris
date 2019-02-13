@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
+import java.io.IOException;
+
 import mbenoukaiss.tetris.game.TetrisActivity;
+import mbenoukaiss.tetris.highscores.ScoreboardActivity;
 
 public class MainActivity extends Activity {
 
@@ -21,6 +24,10 @@ public class MainActivity extends Activity {
         });
 
         Button highscores = findViewById(R.id.highscores);
+        highscores.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ScoreboardActivity.class);
+            startActivity(intent);
+        });
 
         Button quit = findViewById(R.id.quit);
         quit.setOnClickListener(v -> {
@@ -29,5 +36,12 @@ public class MainActivity extends Activity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
+
+        try {
+            openFileOutput("scores", MODE_PRIVATE).close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
+
 }

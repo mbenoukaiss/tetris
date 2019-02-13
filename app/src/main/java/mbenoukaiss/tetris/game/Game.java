@@ -15,6 +15,8 @@ public class Game {
 
     private final Context context;
 
+    private ScoreChangeListener scoreListener;
+
     private Size gridSize;
 
     private TetrominoFactory factory;
@@ -24,6 +26,8 @@ public class Game {
     private Tetromino falling;
 
     private Integer[][] fallen;
+
+    private int score;
 
     private boolean started;
 
@@ -35,12 +39,18 @@ public class Game {
         this.factory = new TetrominoFactory(gridSize.getWidth());
         this.future = new LinkedList<>();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
+        this.score = 0;
         this.started = false;
         this.lost = false;
     }
 
     public Size getGridSize() {
         return gridSize;
+    }
+
+    public void setScoreListener(ScoreChangeListener scoreListener) {
+        this.scoreListener = scoreListener;
+        this.scoreListener.onScoreChanged(score);
     }
 
     public Tetromino nextTetromino() {
@@ -90,7 +100,7 @@ public class Game {
                 }
             }
 
-            checkLines();
+            calculateScore(checkLines());
             falling = nextTetromino();
         } else {
             falling.down();
@@ -98,8 +108,12 @@ public class Game {
     }
 
     public void hardDrop() {
-        while(isTranslationValid(0, 1))
+        while(isTranslationValid(0, 1)) {
             processFallingTetromino();
+            ++score;
+        }
+
+        scoreListener.onScoreChanged(score);
     }
 
     public boolean isRotationValid() {
@@ -156,8 +170,9 @@ public class Game {
         return canTranslate;
     }
 
-    private void checkLines() {
-        //TODO: Return the amount of lines removed to calculate the score
+    private int checkLines() {
+        int count = 0;
+
         for(int i = 0; i < gridSize.getHeight(); ++i) {
             int j = 0;
 
@@ -165,9 +180,13 @@ public class Game {
                 if(fallen[j][i] == null) break;
                 else ++j;
 
-            if(j == gridSize.getWidth()) //complete line
+            if(j == gridSize.getWidth()) {//complete line
                 shiftFallen(i);
+                ++count;
+            }
         }
+
+        return count;
     }
 
     private void shiftFallen(int row) {
@@ -183,6 +202,32 @@ public class Game {
 
             if(allNull) return;
         }
+    }
+
+    private void calculateScore(int lines) {
+        switch(lines) {
+            case 0: return;
+            case 1:
+                score += 40;
+                break;
+            case 2:
+                score += 100;
+                break;
+            case 3:
+                score += 300;
+                break;
+            case 4:
+                score += 1200;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid lines count " + lines);
+        }
+
+        scoreListener.onScoreChanged(score);
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public boolean isStarted() {

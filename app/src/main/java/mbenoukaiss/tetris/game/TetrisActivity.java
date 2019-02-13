@@ -7,10 +7,11 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import mbenoukaiss.tetris.R;
 
-public class TetrisActivity extends Activity {
+public class TetrisActivity extends Activity implements ScoreChangeListener {
 
     private static final int MIN_SWIPE_DISTANCE = 75;
 
@@ -44,6 +45,9 @@ public class TetrisActivity extends Activity {
                 clock.setDelay(50);
             } else {
                 Intent intent = new Intent(TetrisActivity.this, LostActivity.class);
+                intent.putExtra("username", "USERNAME");
+                intent.putExtra("score", game.getScore());
+                finish();
                 startActivity(intent);
                 return false;
             }
@@ -66,6 +70,7 @@ public class TetrisActivity extends Activity {
         RIGHT_AREA = new Rect(2 * screenSize.x / 3, 0, screenSize.x, screenSize.y);
 
         game = new Game(getApplicationContext());
+        game.setScoreListener(this);
 
         tetris = findViewById(R.id.gridview);
         tetris.setAdapter(new Adapter(this, tetris, game));
@@ -74,6 +79,8 @@ public class TetrisActivity extends Activity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        if(game.isLost()) return true;
+
         if(!game.isStarted()) {
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 game.start();
@@ -119,6 +126,12 @@ public class TetrisActivity extends Activity {
         }
 
         return true;
+    }
+
+    @Override
+    public void onScoreChanged(int score) {
+        TextView view = findViewById(R.id.score);
+        view.setText(String.valueOf(score));
     }
 
 }
