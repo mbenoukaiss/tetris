@@ -97,7 +97,7 @@ public class Game {
         }
     }
 
-    public void dropFallingTetromino() {
+    public void hardDrop() {
         while(isTranslationValid(0, 1))
             processFallingTetromino();
     }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.widget.GridView;
 
@@ -17,11 +16,13 @@ public class TetrisActivity extends Activity {
 
     private static final int MAX_X_MARGIN_OF_ERROR = 250;
 
-    private Rect LEFT_TOUCH_AREA;
+    private Rect LEFT_AREA;
 
-    private Rect ROTATE_TOUCH_AREA;
+    private Rect ROTATE_AREA;
 
-    private Rect RIGHT_TOUCH_AREA;
+    private Rect SOFT_DROP_AREA;
+
+    private Rect RIGHT_AREA;
 
     private Game game;
 
@@ -29,27 +30,26 @@ public class TetrisActivity extends Activity {
 
     private Point swipeStart;
 
-    private Handler handler = new Handler();
-
-    private Runnable fallingTetrominoesClock = new Runnable() {
-        @Override
-        public void run() {
-            if(!game.isLost()) {
-                game.processFallingTetromino();
-                tetris.invalidateViews();
-                handler.postDelayed(this, 500);
-            } else if(tetris.getAlpha() > 0.0f) {
-                tetris.setAlpha(tetris.getAlpha() - 0.05f);
-                handler.postDelayed(this, 200);
-            } else {
-                Intent intent = new Intent(TetrisActivity.this, LostActivity.class);
-                startActivity(intent);
-            }
-        }
-    };
+    private Clock clock;
 
     public TetrisActivity() {
         swipeStart = new Point();
+
+        clock = new Clock(() -> {
+            if(!game.isLost()) {
+                game.processFallingTetromino();
+                tetris.invalidateViews();
+            } else if(tetris.getAlpha() > 0.0f) {
+                tetris.setAlpha(tetris.getAlpha() - 0.05f);
+                clock.setDelay(50);
+            } else {
+                Intent intent = new Intent(TetrisActivity.this, LostActivity.class);
+                startActivity(intent);
+                return false;
+            }
+
+            return true;
+        }, 500);
     }
 
     @Override
@@ -60,9 +60,10 @@ public class TetrisActivity extends Activity {
         Point screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
 
-        LEFT_TOUCH_AREA = new Rect(0, 0, screenSize.x / 3, screenSize.y);
-        ROTATE_TOUCH_AREA = new Rect(screenSize.x / 3 + 1, 0, 2 * screenSize.x / 3 - 1, screenSize.y);
-        RIGHT_TOUCH_AREA = new Rect(2 * screenSize.x / 3, 0, screenSize.x, screenSize.y);
+        LEFT_AREA = new Rect(0, 0, screenSize.x / 3, screenSize.y);
+        ROTATE_AREA = new Rect(screenSize.x / 3 + 1, screenSize.y / 2 + 1, 2 * screenSize.x / 3 - 1, screenSize.y);
+        SOFT_DROP_AREA = new Rect(screenSize.x / 3 + 1, 0, 2 * screenSize.x / 3 - 1, screenSize.y / 2);
+        RIGHT_AREA = new Rect(2 * screenSize.x / 3, 0, screenSize.x, screenSize.y);
 
         game = new Game(getApplicationContext());
 
@@ -77,7 +78,7 @@ public class TetrisActivity extends Activity {
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 game.start();
                 tetris.invalidateViews();
-                handler.postDelayed(fallingTetrominoesClock, 500);
+                clock.run();
             }
 
             return true;
@@ -85,25 +86,31 @@ public class TetrisActivity extends Activity {
 
         if(event.getActionMasked() == MotionEvent.ACTION_DOWN) {
             swipeStart = new Point((int) event.getX(), (int) event.getY());
+
+            if(SOFT_DROP_AREA.contains((int) event.getX(), (int) event.getY())) {
+                clock.setDelay(50);
+            }
         } else if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+            clock.setDelay(500);
+
             if(event.getY() - swipeStart.y > MIN_SWIPE_DISTANCE &&
                     Math.abs(event.getX() - swipeStart.x) <= MAX_X_MARGIN_OF_ERROR) {
-                game.dropFallingTetromino();
+                game.hardDrop();
                 tetris.invalidateViews();
                 return true;
             }
 
-            if(LEFT_TOUCH_AREA.contains((int) event.getX(), (int) event.getY())) {
+            if(LEFT_AREA.contains((int) event.getX(), (int) event.getY())) {
                 if(game.isTranslationValid(-1, 0)) {
                     game.getFallingTetromino().left();
                     tetris.invalidateViews();
                 }
-            } else if(ROTATE_TOUCH_AREA.contains((int) event.getX(), (int) event.getY())) {
+            } else if(ROTATE_AREA.contains((int) event.getX(), (int) event.getY())) {
                 if(game.isRotationValid()) {
                     game.getFallingTetromino().rotate();
                     tetris.invalidateViews();
                 }
-            } else if(RIGHT_TOUCH_AREA.contains((int) event.getX(), (int) event.getY())) {
+            } else if(RIGHT_AREA.contains((int) event.getX(), (int) event.getY())) {
                 if(game.isTranslationValid(1, 0)) {
                     game.getFallingTetromino().right();
                     tetris.invalidateViews();
