@@ -3,16 +3,16 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_enabled="false"
-        android:drawable="@drawable/button_disabled" />
+        android:drawable="@drawable/style_disabled" />
     <item
         android:state_pressed="true"
         android:state_enabled="true"
-        android:drawable="@drawable/button_pressed" />
+        android:drawable="@drawable/style_pressed" />
     <item
         android:state_focused="true"
         android:state_enabled="true"
-        android:drawable="@drawable/button_focused" />
+        android:drawable="@drawable/style_focused" />
     <item
         android:state_enabled="true"
-        android:drawable="@drawable/button_enabled" />
+        android:drawable="@drawable/style_enabled" />
 </selector>

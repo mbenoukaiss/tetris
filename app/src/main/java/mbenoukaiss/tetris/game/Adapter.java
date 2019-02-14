@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.media.Image;
 import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,13 @@ public class Adapter extends BaseAdapter {
 
     private final Game game;
 
+    private final Bitmap square;
+
     public Adapter(Context context, GridView view, Game game) {
         this.context = context;
         this.game = game;
         this.view = view;
+        this.square = BitmapFactory.decodeResource(context.getResources(), R.drawable.square);
     }
 
     @Override
@@ -49,9 +53,17 @@ public class Adapter extends BaseAdapter {
                 offset / game.getGridSize().getWidth()
         );
 
-        ImageView view = new ImageView(context);
-        view.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.square));
-        view.setAdjustViewBounds(true);
+        ImageView view;
+
+        if(convertView == null) {
+            view = new ImageView(context);
+            view.setImageBitmap(square);
+            view.setAdjustViewBounds(true);
+        } else {
+            view = (ImageView) convertView;
+            view.setAlpha(1.0f);
+        }
+
 
         int filter = game.getSquareAt(position);
         view.setColorFilter(filter - 0x44000000);

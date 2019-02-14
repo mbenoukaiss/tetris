@@ -17,6 +17,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        Button settings = findViewById(R.id.settings);
+        settings.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
+
         Button play = findViewById(R.id.play);
         play.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, TetrisActivity.class);

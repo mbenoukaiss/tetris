@@ -1,7 +1,9 @@
 package mbenoukaiss.tetris.game;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -20,13 +22,17 @@ public class LostActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lost);
 
+        SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+
         Intent intent = getIntent();
-        String username = intent.getStringExtra("username");
         int score = intent.getIntExtra("score", 0);
 
         Scoreboard dao = new Scoreboard(getApplicationContext());
         dao.open();
-        dao.insertScore(new Score(username, score, DateFormat.getDateInstance().format(new Date())));
+        dao.insertScore(new Score(preferences.getString("username", getString(R.string.player)),
+                score,
+                DateFormat.getDateInstance().format(new Date())
+        ));
 
         TextView scoreView = findViewById(R.id.score);
         scoreView.setText(String.format(scoreView.getText().toString(), score));

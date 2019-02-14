@@ -19,6 +19,9 @@
             android:name=".highscores.ScoreboardActivity"
             android:screenOrientation="portrait"></activity>
         <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

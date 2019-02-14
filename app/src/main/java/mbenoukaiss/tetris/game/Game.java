@@ -1,6 +1,7 @@
 package mbenoukaiss.tetris.game;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.util.Size;
 
@@ -8,10 +9,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import mbenoukaiss.tetris.R;
 import mbenoukaiss.tetris.game.pieces.Tetromino;
 import mbenoukaiss.tetris.game.pieces.TetrominoFactory;
 
 public class Game {
+
+    public static final int DEFAULT_GRID_WIDTH = 12;
+
+    public static final int DEFAULT_GRID_HEIGHT = 16;
 
     private final Context context;
 
@@ -35,7 +41,12 @@ public class Game {
 
     public Game(Context context) {
         this.context = context;
-        this.gridSize = new Size(12, 16);
+
+        SharedPreferences preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String[] size = preferences.getString("size", Game.DEFAULT_GRID_WIDTH + " x " + Game.DEFAULT_GRID_HEIGHT)
+                .split(" x ");
+
+        this.gridSize = new Size(Integer.valueOf(size[0]), Integer.valueOf(size[1]));
         this.factory = new TetrominoFactory(gridSize.getWidth());
         this.future = new LinkedList<>();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
@@ -67,7 +78,7 @@ public class Game {
     }
 
     public int getSquareAt(Point position) {
-        if(falling != null && position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
+        if(started && !lost && position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
                 position.x < falling.getPosition().x + falling.getSize().getWidth() &&
                 position.y < falling.getPosition().y + falling.getSize().getHeight()) {
 
@@ -134,7 +145,6 @@ public class Game {
 
         return true;
     }
-
 
     public boolean isTranslationValid(int ox, int oy) {
         if(Math.abs(ox) > 1 || oy < 0 || oy > 1)
@@ -249,6 +259,7 @@ public class Game {
 
     private void lost() {
         lost = true;
+        started = false;
         falling = null;
     }
 

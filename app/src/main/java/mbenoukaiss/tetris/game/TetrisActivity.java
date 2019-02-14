@@ -1,7 +1,9 @@
 package mbenoukaiss.tetris.game;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -37,13 +39,13 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
         swipeStart = new Point();
 
         clock = new Clock(() -> {
-            if(!game.isLost()) {
+            if(game.isStarted() && !game.isLost()) {
                 game.processFallingTetromino();
                 tetris.invalidateViews();
-            } else if(tetris.getAlpha() > 0.0f) {
+            } else if(game.isLost() && tetris.getAlpha() > 0.0f) {
                 tetris.setAlpha(tetris.getAlpha() - 0.05f);
-                clock.setDelay(50);
-            } else {
+                clock.setDelay(10);
+            } else if(game.isLost() && tetris.getAlpha() <= 0.0f){
                 Intent intent = new Intent(TetrisActivity.this, LostActivity.class);
                 intent.putExtra("username", "USERNAME");
                 intent.putExtra("score", game.getScore());
@@ -53,7 +55,7 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
             }
 
             return true;
-        }, 500);
+        }, 750);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
                 clock.setDelay(50);
             }
         } else if(event.getActionMasked() == MotionEvent.ACTION_UP) {
-            clock.setDelay(500);
+            clock.setDelay(750);
 
             if(event.getY() - swipeStart.y > MIN_SWIPE_DISTANCE &&
                     Math.abs(event.getX() - swipeStart.x) <= MAX_X_MARGIN_OF_ERROR) {
@@ -126,6 +128,18 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
         }
 
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        clock.run();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        clock.pause();
     }
 
     @Override
