@@ -1,9 +1,7 @@
 package mbenoukaiss.tetris.game;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -40,14 +38,15 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
 
         clock = new Clock(() -> {
             if(game.isStarted() && !game.isLost()) {
-                game.processFallingTetromino();
+                if(!game.processFallingTetromino())
+                    clock.setDelay(clock.getDelay() - 5);
+
                 tetris.invalidateViews();
             } else if(game.isLost() && tetris.getAlpha() > 0.0f) {
                 tetris.setAlpha(tetris.getAlpha() - 0.05f);
                 clock.setDelay(10);
-            } else if(game.isLost() && tetris.getAlpha() <= 0.0f){
+            } else if(game.isLost() && tetris.getAlpha() <= 0.0f) {
                 Intent intent = new Intent(TetrisActivity.this, LostActivity.class);
-                intent.putExtra("username", "USERNAME");
                 intent.putExtra("score", game.getScore());
                 finish();
                 startActivity(intent);
@@ -75,7 +74,7 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
         game.setScoreListener(this);
 
         tetris = findViewById(R.id.gridview);
-        tetris.setAdapter(new Adapter(this, tetris, game));
+        tetris.setAdapter(new Adapter(this, game));
         tetris.setNumColumns(game.getGridSize().getWidth());
     }
 
@@ -86,8 +85,7 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
         if(!game.isStarted()) {
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 game.start();
-                tetris.invalidateViews();
-                clock.run();
+                clock.start();
             }
 
             return true;
@@ -97,10 +95,11 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
             swipeStart = new Point((int) event.getX(), (int) event.getY());
 
             if(SOFT_DROP_AREA.contains((int) event.getX(), (int) event.getY())) {
-                clock.setDelay(50);
+                clock.accelerate(Game.DEFAULT_SOFT_DROP_MODIFIER);
             }
         } else if(event.getActionMasked() == MotionEvent.ACTION_UP) {
-            clock.setDelay(750);
+            if(clock.isAccelerated())
+                clock.decelerate();
 
             if(event.getY() - swipeStart.y > MIN_SWIPE_DISTANCE &&
                     Math.abs(event.getX() - swipeStart.x) <= MAX_X_MARGIN_OF_ERROR) {
@@ -109,21 +108,15 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
                 return true;
             }
 
-            if(LEFT_AREA.contains((int) event.getX(), (int) event.getY())) {
-                if(game.isTranslationValid(-1, 0)) {
-                    game.getFallingTetromino().left();
-                    tetris.invalidateViews();
-                }
-            } else if(ROTATE_AREA.contains((int) event.getX(), (int) event.getY())) {
-                if(game.isRotationValid()) {
-                    game.getFallingTetromino().rotate();
-                    tetris.invalidateViews();
-                }
-            } else if(RIGHT_AREA.contains((int) event.getX(), (int) event.getY())) {
-                if(game.isTranslationValid(1, 0)) {
-                    game.getFallingTetromino().right();
-                    tetris.invalidateViews();
-                }
+            if(LEFT_AREA.contains((int) event.getX(), (int) event.getY()) && game.isTranslationValid(-1, 0)) {
+                game.getFallingTetromino().left();
+                tetris.invalidateViews();
+            } else if(ROTATE_AREA.contains((int) event.getX(), (int) event.getY()) && game.isRotationValid()) {
+                game.getFallingTetromino().rotate();
+                tetris.invalidateViews();
+            } else if(RIGHT_AREA.contains((int) event.getX(), (int) event.getY()) && game.isTranslationValid(1, 0)) {
+                game.getFallingTetromino().right();
+                tetris.invalidateViews();
             }
         }
 
@@ -133,13 +126,17 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
     @Override
     protected void onResume() {
         super.onResume();
-        clock.run();
+
+        if(game.isStarted())
+            clock.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        clock.pause();
+
+        if(game.isStarted())
+            clock.pause();
     }
 
     @Override

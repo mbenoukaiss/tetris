@@ -4,12 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.media.Image;
-import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import mbenoukaiss.tetris.R;
@@ -18,16 +15,13 @@ public class Adapter extends BaseAdapter {
 
     private final Context context;
 
-    private final GridView view;
-
     private final Game game;
 
     private final Bitmap square;
 
-    public Adapter(Context context, GridView view, Game game) {
+    Adapter(Context context, Game game) {
         this.context = context;
         this.game = game;
-        this.view = view;
         this.square = BitmapFactory.decodeResource(context.getResources(), R.drawable.square);
     }
 
@@ -63,7 +57,6 @@ public class Adapter extends BaseAdapter {
             view = (ImageView) convertView;
             view.setAlpha(1.0f);
         }
-
 
         int filter = game.getSquareAt(position);
         view.setColorFilter(filter - 0x44000000);

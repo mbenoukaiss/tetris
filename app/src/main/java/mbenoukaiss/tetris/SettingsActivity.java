@@ -65,6 +65,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(getApplicationContext(), R.string.long_username, Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 SharedPreferences.Editor editor = getSharedPreferences("settings", Context.MODE_PRIVATE).edit();
                 editor.putString("size", size);
                 if(!usernameView.getText().equals(getString(R.string.player)))

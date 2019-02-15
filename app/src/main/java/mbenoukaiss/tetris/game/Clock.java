@@ -1,6 +1,7 @@
 package mbenoukaiss.tetris.game;
 
 import android.os.Handler;
+import android.os.SystemClock;
 
 import java.util.function.Supplier;
 
@@ -12,37 +13,62 @@ public class Clock {
 
     private boolean running;
 
-    private int delay;
+    private long delay;
 
-    public Clock(Supplier<Boolean> runnable, int delay) {
+    private float factor;
+
+    public Clock(Supplier<Boolean> runnable, long delay) {
         this.handler = new Handler();
         this.runnable = runnable;
         this.running = false;
         this.delay = delay;
+        this.factor = 1.0f;
+    }
+
+    public synchronized void start() {
+        running = true;
+
+        handler.removeCallbacksAndMessages(null);
+        run();
     }
 
     public synchronized void run() {
-        running = true;
-
         handler.postDelayed(() -> {
             if(running)
                 running = runnable.get();
 
             if(running)
-                handler.postDelayed(this::run, delay);
-        }, delay);
+                run();
+        }, getAcceleratedDelay());
     }
 
     public synchronized void pause() {
         running = false;
+        handler.removeCallbacksAndMessages(null);
     }
 
-    public synchronized int getDelay() {
+    public synchronized long getAcceleratedDelay() {
+        return (long) (delay * factor);
+    }
+
+    public synchronized long getDelay() {
         return delay;
     }
 
-    public synchronized void setDelay(int delay) {
+    public synchronized void setDelay(long delay) {
         this.delay = delay;
+    }
+
+    public synchronized void accelerate(float factor) {
+        this.factor /= factor;
+    }
+
+    public synchronized void decelerate() {
+        factor = 1.0f;
+    }
+
+    public synchronized boolean isAccelerated() {
+        return factor != 1.0f;
     }
 
 }

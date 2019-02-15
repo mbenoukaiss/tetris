@@ -19,7 +19,7 @@ public class Game {
 
     public static final int DEFAULT_GRID_HEIGHT = 16;
 
-    private final Context context;
+    public static final int DEFAULT_SOFT_DROP_MODIFIER = 4;
 
     private ScoreChangeListener scoreListener;
 
@@ -40,8 +40,6 @@ public class Game {
     private boolean lost;
 
     public Game(Context context) {
-        this.context = context;
-
         SharedPreferences preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
         String[] size = preferences.getString("size", Game.DEFAULT_GRID_WIDTH + " x " + Game.DEFAULT_GRID_HEIGHT)
                 .split(" x ");
@@ -78,7 +76,7 @@ public class Game {
     }
 
     public int getSquareAt(Point position) {
-        if(started && !lost && position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
+        if(started && position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
                 position.x < falling.getPosition().x + falling.getSize().getWidth() &&
                 position.y < falling.getPosition().y + falling.getSize().getHeight()) {
 
@@ -88,22 +86,17 @@ public class Game {
 
         Integer squareColor = fallen[position.x][position.y];
 
-        if(squareColor == null)
-            return 0xFFFFFFFF;
-        else
-            return squareColor;
+        return squareColor == null ? 0xFFFFFFFF : squareColor;
     }
 
-    public void processFallingTetromino() {
-        boolean reachedBottom = !isTranslationValid(0, 1);
-
-        if(reachedBottom) {
+    public boolean processFallingTetromino() {
+        if(!isTranslationValid(0, 1)) { //reached bottom
             for(int i = 0; i < falling.getSize().getWidth(); ++i) {
                 for(int j = 0; j < falling.getSize().getHeight(); ++j) {
                     if(falling.getLayout()[j][i] == 1) {
                         if(fallen[falling.getPosition().x + i][falling.getPosition().y + j] != null) {
                             lost();
-                            return;
+                            return false;
                         }
 
                         fallen[falling.getPosition().x + i][falling.getPosition().y + j] = falling.getColor();
@@ -113,8 +106,10 @@ public class Game {
 
             calculateScore(checkLines());
             falling = nextTetromino();
+            return false;
         } else {
             falling.down();
+            return true;
         }
     }
 
