@@ -22,8 +22,7 @@
     <string name="grid_size">Grid size</string>
     <string name="player">Player</string>
     <string name="long_username">The username must not be more than 14 characters long</string>
-    <string name="controls_description">Touch the left part of the screen to move the tetromino left, and the right part to move the tetromino right.\nYou can touch the middle bottom part of the screen to rotate it, and maintain touch the middle top part of the screen to make it fall more quickly. You can swipe down to hard drop the tetromino.\n\nClick anywhere on the screen to start !</string>
-
+    <string name="controls_description">Touch the left part of the screen to move the tetromino left, and the right part to move the tetromino right.\nYou can touch the middle bottom part of the screen to rotate it, and maintain touch the middle top part of the screen to make it fall quickly. You can swipe down to hard drop the tetromino.\n\Touch anywhere on the screen to start !</string>
 
     <string-array name="gridsize_spinner" translatable="false">
         <item>8 x 12</item>
