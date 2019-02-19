@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -78,12 +79,19 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
         tetris.setNumColumns(game.getGridSize().getWidth());
     }
 
+
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        super.dispatchTouchEvent(event);
+
         if(game.isLost()) return true;
 
         if(!game.isStarted()) {
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
+                findViewById(R.id.controls_overlay).setVisibility(View.GONE);
+                findViewById(R.id.gridview).setVisibility(View.VISIBLE);
+                findViewById(R.id.score).setVisibility(View.VISIBLE);
                 game.start();
                 clock.start();
             }
