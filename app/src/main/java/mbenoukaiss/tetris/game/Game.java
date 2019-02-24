@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.util.Size;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import mbenoukaiss.tetris.R;
@@ -27,8 +29,6 @@ public class Game {
 
     private TetrominoFactory factory;
 
-    private Queue<Tetromino> future;
-
     private Tetromino falling;
 
     private Integer[][] fallen;
@@ -46,7 +46,6 @@ public class Game {
 
         this.gridSize = new Size(Integer.valueOf(size[0]), Integer.valueOf(size[1]));
         this.factory = new TetrominoFactory(gridSize.getWidth());
-        this.future = new LinkedList<>();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
         this.score = 0;
         this.started = false;
@@ -62,13 +61,38 @@ public class Game {
         this.scoreListener.onScoreChanged(score);
     }
 
-    public Tetromino nextTetromino() {
-        future.add(factory.generate());
-        return future.remove();
-    }
+    private Tetromino nextTetromino() {
+        Tetromino generated = factory.generate();
 
-    public Iterator<Tetromino> futureTetrominoes() {
-        return future.iterator();
+        List<Integer> validPositions = new ArrayList<>();
+        int[][] layout = generated.getLayout();
+        Point position = generated.getPosition();
+        Size size = generated.getSize();
+
+        while(position.x + size.getWidth() < gridSize.getWidth()) {
+            boolean valid = true;
+
+            for(int i = 0; valid && i < size.getWidth(); ++i) {
+                for(int j = 0; valid && j < size.getHeight(); ++j) {
+                    if(layout[j][i] == 1 && fallen[position.x + i][position.y + j] != null) {
+                        valid = false;
+                    }
+                }
+            }
+
+            if(valid)
+                validPositions.add(position.x);
+
+            generated.right();
+        }
+
+        if(validPositions.isEmpty()) {
+            lost();
+            return null;
+        } else {
+            position.x = validPositions.get((int) (Math.random() * validPositions.size()));
+            return generated;
+        }
     }
 
     public Tetromino getFallingTetromino() {
@@ -148,7 +172,7 @@ public class Game {
         boolean canTranslate = true;
 
         if(ox != 0) {
-            canTranslate =  falling.getPosition().x + ox >= 0 &&
+            canTranslate = falling.getPosition().x + ox >= 0 &&
                     falling.getPosition().x + falling.getSize().getWidth() + ox <= gridSize.getWidth();
 
             for(int i = 0; i < falling.getSize().getHeight() && canTranslate; ++i) {
@@ -211,7 +235,8 @@ public class Game {
 
     private void calculateScore(int lines) {
         switch(lines) {
-            case 0: return;
+            case 0:
+                return;
             case 1:
                 score += 40;
                 break;
@@ -241,10 +266,6 @@ public class Game {
 
     public void start() {
         started = true;
-
-        for(int i = 0; i < 3; ++i)
-            future.add(factory.generate());
-
         falling = nextTetromino();
     }
 

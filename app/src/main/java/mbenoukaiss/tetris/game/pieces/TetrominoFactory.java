@@ -65,7 +65,7 @@ public class TetrominoFactory {
      *
      * @return A tetromino
      */
-    public mbenoukaiss.tetris.game.pieces.Tetromino generate() {
+    public Tetromino generate() {
         Type type = null;
 
         do {
@@ -85,7 +85,7 @@ public class TetrominoFactory {
         Point position = new Point(0, 0);
         position.x = (int) (Math.random() * (gridWidth - type.width + 1));
 
-        return new mbenoukaiss.tetris.game.pieces.Tetromino(type, position);
+        return new Tetromino(type, position);
     }
 
 }

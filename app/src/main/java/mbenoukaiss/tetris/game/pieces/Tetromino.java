@@ -90,7 +90,7 @@ public class Tetromino implements mbenoukaiss.tetris.game.pieces.Movable {
     }
 
     public Point getPosition() {
-        return new Point(position);
+        return position;
     }
 
     public Size getSize() {
