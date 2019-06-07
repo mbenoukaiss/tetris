@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import mbenoukaiss.tetris.R;
 
-public class TetrisActivity extends Activity implements ScoreChangeListener, View.OnClickListener {
+public class TetrisActivity extends Activity implements ScoreChangeListener {
 
     private static final int MIN_SWIPE_DISTANCE = 75;
 
@@ -66,6 +66,7 @@ public class TetrisActivity extends Activity implements ScoreChangeListener, Vie
         Point screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
 
+        //define the click areas
         LEFT_AREA = new Rect(0, 0, screenSize.x / 3, screenSize.y);
         ROTATE_AREA = new Rect(screenSize.x / 3 + 1, screenSize.y / 2 + 1, 2 * screenSize.x / 3 - 1, screenSize.y);
         SOFT_DROP_AREA = new Rect(screenSize.x / 3 + 1, 0, 2 * screenSize.x / 3 - 1, screenSize.y / 2);
@@ -85,6 +86,7 @@ public class TetrisActivity extends Activity implements ScoreChangeListener, Vie
 
         if(game.isLost()) return true;
 
+        //when the user clicks to remove the controls
         if(!game.isStarted()) {
             if(event.getActionMasked() == MotionEvent.ACTION_UP) {
                 findViewById(R.id.controls_overlay).setVisibility(View.GONE);
@@ -101,7 +103,7 @@ public class TetrisActivity extends Activity implements ScoreChangeListener, Vie
             swipeStart = new Point((int) event.getX(), (int) event.getY());
 
             if(SOFT_DROP_AREA.contains((int) event.getX(), (int) event.getY())) {
-                clock.accelerate(Game.DEFAULT_SOFT_DROP_MODIFIER);
+                clock.accelerate(Game.DEFAULT_SOFT_DROP_SPEED_FACTOR);
             }
         } else if(event.getActionMasked() == MotionEvent.ACTION_UP) {
             if(clock.isAccelerated())
@@ -151,8 +153,4 @@ public class TetrisActivity extends Activity implements ScoreChangeListener, Vie
         view.setText(String.valueOf(score));
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 }

@@ -21,7 +21,7 @@ public class Game {
 
     public static final int DEFAULT_GRID_HEIGHT = 16;
 
-    public static final int DEFAULT_SOFT_DROP_MODIFIER = 4;
+    public static final int DEFAULT_SOFT_DROP_SPEED_FACTOR = 4;
 
     private ScoreChangeListener scoreListener;
 
@@ -45,7 +45,7 @@ public class Game {
                 .split(" x ");
 
         this.gridSize = new Size(Integer.valueOf(size[0]), Integer.valueOf(size[1]));
-        this.factory = new TetrominoFactory(gridSize.getWidth());
+        this.factory = new TetrominoFactory();
         this.fallen = new Integer[gridSize.getWidth()][gridSize.getHeight()];
         this.score = 0;
         this.started = false;
@@ -101,17 +101,27 @@ public class Game {
     }
 
     public int getSquareAt(Point position) {
-        if(started && position.x >= falling.getPosition().x && position.y >= falling.getPosition().y &&
+        //check if the tetromino at targetted position is the one falling
+        if(started &&
+                position.x >= falling.getPosition().x &&
+                position.y >= falling.getPosition().y &&
                 position.x < falling.getPosition().x + falling.getSize().getWidth() &&
                 position.y < falling.getPosition().y + falling.getSize().getHeight()) {
 
-            if(falling.getLayout()[position.y - falling.getPosition().y][position.x - falling.getPosition().x] == 1)
+            int yInTetromino = position.y - falling.getPosition().y;
+            int xInTetromino = position.x - falling.getPosition().x;
+
+            if(falling.getLayout()[yInTetromino][xInTetromino] == 1)
                 return falling.getColor();
         }
 
         Integer squareColor = fallen[position.x][position.y];
 
-        return squareColor == null ? 0xFFFFFFFF : squareColor;
+        if(squareColor != null) {
+            return squareColor;
+        } else {
+            return 0xFFFFFFFF;
+        }
     }
 
     public boolean processFallingTetromino() {

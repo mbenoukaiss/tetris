@@ -1,7 +1,6 @@
 package mbenoukaiss.tetris.game;
 
 import android.os.Handler;
-import android.os.SystemClock;
 
 import java.util.function.Supplier;
 

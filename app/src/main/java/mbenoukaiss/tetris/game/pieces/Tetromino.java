@@ -85,7 +85,7 @@ public class Tetromino implements mbenoukaiss.tetris.game.pieces.Movable {
         this.size = other.size;
         this.matrix = new int[size.getHeight()][];
 
-        for(int i = 0 ; i < size.getHeight(); ++i)
+        for(int i = 0; i < size.getHeight(); ++i)
             matrix[i] = other.matrix[i].clone();
     }
 
@@ -112,7 +112,7 @@ public class Tetromino implements mbenoukaiss.tetris.game.pieces.Movable {
         int[][] newMatrix = new int[size.getHeight()][size.getWidth()];
         for(int i = 0; i < size.getWidth(); ++i) {
             for(int j = 0; j < size.getHeight(); ++j) {
-                newMatrix[j][size.getWidth()-1-i] = matrix[i][j];
+                newMatrix[j][size.getWidth() - 1 - i] = matrix[i][j];
             }
         }
 

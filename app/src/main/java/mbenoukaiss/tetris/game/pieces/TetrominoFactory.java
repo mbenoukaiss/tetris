@@ -21,16 +21,10 @@ public class TetrominoFactory {
     private double total;
 
     /**
-     * The width of the grid on which the
-     * tetrominoes will be generated.
-     */
-    private int gridWidth;
-
-    /**
      * Default constructor. All tetrominoes will
      * have the same chance to get generated.
      */
-    public TetrominoFactory(int gridWidth) {
+    public TetrominoFactory() {
         this.probabilities = new HashMap<>();
         probabilities.put(Type.I, 1.0d);
         probabilities.put(Type.O, 1.0d);
@@ -41,7 +35,6 @@ public class TetrominoFactory {
         probabilities.put(Type.S, 1.0d);
 
         this.total = Type.values().length;
-        this.gridWidth = gridWidth;
     }
 
     /**
@@ -50,10 +43,9 @@ public class TetrominoFactory {
      *
      * @param probabilities Probability of each tetromino
      */
-    public TetrominoFactory(Map<Type, Double> probabilities, int gridWidth) {
+    public TetrominoFactory(Map<Type, Double> probabilities) {
         this.probabilities = probabilities;
         this.total = 0;
-        this.gridWidth = gridWidth;
 
         for(double probability : probabilities.values())
             total += probability;

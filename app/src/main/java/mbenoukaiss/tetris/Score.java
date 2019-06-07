@@ -1,7 +1,5 @@
 package mbenoukaiss.tetris;
 
-import java.util.Date;
-
 public class Score {
 
     private String username;

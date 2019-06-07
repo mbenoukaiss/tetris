@@ -55,12 +55,18 @@ public class Adapter extends BaseAdapter {
             view.setAdjustViewBounds(true);
         } else {
             view = (ImageView) convertView;
-            view.setAlpha(1.0f);
+            view.setAlpha(1.0f); //reset alpha in case it was a white square
         }
 
         int filter = game.getSquareAt(position);
+
+        //remove some opacity so the background image of the square
+        //is still visible
         view.setColorFilter(filter - 0x44000000);
-        if(filter == 0xFFFFFFFF) view.setAlpha(0.25f);
+
+        //if it's white, reduce the alpha
+        if(filter == 0xFFFFFFFF)
+            view.setAlpha(0.25f);
 
         return view;
     }

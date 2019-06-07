@@ -15,15 +15,11 @@ import mbenoukaiss.tetris.Score;
 
 public class ScoreGridAdapter extends BaseAdapter {
 
-    private final Context context;
-
-
     private final LayoutInflater inflater;
 
     private final List<Score> scores;
 
     public ScoreGridAdapter(Context context, List<Score> scores) {
-        this.context = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.scores = scores;
     }
@@ -48,20 +44,20 @@ public class ScoreGridAdapter extends BaseAdapter {
         TextView text;
 
         if(convertView == null) {
-            text = (TextView) inflater.inflate(R.layout.scoreboard_item, null);
+            text = (TextView) inflater.inflate(R.layout.scoreboard_item, parent);
         } else {
             text = (TextView) convertView;
             text.setTextSize(14);
         }
 
-        if(position == 0) {
+        if(position == 0) { //username header
             text.setText(R.string.username);
             text.setTextSize(16);
-        } else if(position == 1) {
+        } else if(position == 1) { //score header
             text.setText(R.string.score);
             text.setTextSize(16);
         } else {
-            position -= 2;
+            position -= 2; //remove the offset created by the header
 
             switch(position % 2) {
                 case 0:
