@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import mbenoukaiss.tetris.R;
 
-public class TetrisActivity extends Activity implements ScoreChangeListener {
+public class TetrisActivity extends Activity implements ScoreChangeListener, View.OnClickListener {
 
     private static final int MIN_SWIPE_DISTANCE = 75;
 
@@ -78,8 +78,6 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
         tetris.setAdapter(new Adapter(this, game));
         tetris.setNumColumns(game.getGridSize().getWidth());
     }
-
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -153,4 +151,8 @@ public class TetrisActivity extends Activity implements ScoreChangeListener {
         view.setText(String.valueOf(score));
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }

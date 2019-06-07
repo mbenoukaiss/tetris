@@ -83,7 +83,6 @@ public class TetrominoFactory {
         } while(type == null);
 
         Point position = new Point(0, 0);
-        position.x = (int) (Math.random() * (gridWidth - type.width + 1));
 
         return new Tetromino(type, position);
     }
