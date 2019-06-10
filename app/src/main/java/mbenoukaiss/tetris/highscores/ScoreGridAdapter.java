@@ -2,7 +2,7 @@ package mbenoukaiss.tetris.highscores;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,18 +15,21 @@ import mbenoukaiss.tetris.Score;
 
 public class ScoreGridAdapter extends BaseAdapter {
 
-    private final LayoutInflater inflater;
+    private final Context context;
 
     private final List<Score> scores;
 
+    private final Typeface pressStart;
+
     public ScoreGridAdapter(Context context, List<Score> scores) {
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = context;
         this.scores = scores;
+        this.pressStart = context.getResources().getFont(R.font.press_start_2p);
     }
 
     @Override
     public int getCount() {
-        return scores.size() * 2 + 2;
+        return scores.size() * 2;
     }
 
     @Override
@@ -44,29 +47,26 @@ public class ScoreGridAdapter extends BaseAdapter {
         TextView text;
 
         if(convertView == null) {
-            text = (TextView) inflater.inflate(R.layout.scoreboard_item, parent);
+            text = new TextView(context);
+            text.setTypeface(pressStart);
+            text.setTextSize(12);
+            text.setPadding(0, 16, 0, 16);
+
+            //textalignment center doesn't work and gets reset to gravity for some reason
+            text.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            text.setGravity(Gravity.CENTER);
         } else {
             text = (TextView) convertView;
-            text.setTextSize(14);
         }
 
-        if(position == 0) { //username header
-            text.setText(R.string.username);
-            text.setTextSize(16);
-        } else if(position == 1) { //score header
-            text.setText(R.string.score);
-            text.setTextSize(16);
-        } else {
-            position -= 2; //remove the offset created by the header
 
-            switch(position % 2) {
-                case 0:
-                    text.setText(scores.get(position / 2).getUsername());
-                    break;
-                case 1:
-                    text.setText(String.valueOf(scores.get(position / 2).getScore()));
-                    break;
-            }
+        switch(position % 2) {
+            case 0:
+                text.setText(scores.get(position / 2).getUsername());
+                break;
+            case 1:
+                text.setText(String.valueOf(scores.get(position / 2).getScore()));
+                break;
         }
 
         return text;

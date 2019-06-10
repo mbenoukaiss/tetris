@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import mbenoukaiss.tetris.R;
 import mbenoukaiss.tetris.Score;
@@ -14,7 +14,7 @@ public class ScoreboardActivity extends Activity implements View.OnClickListener
 
     private Scoreboard dao;
 
-    private ArrayList<Score> scores;
+    private List<Score> scores;
 
     private GridView scoresView;
 
