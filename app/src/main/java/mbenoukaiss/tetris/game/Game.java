@@ -87,7 +87,6 @@ public class Game {
         }
 
         if(validPositions.isEmpty()) {
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA");
             lost();
             return null;
         } else {
